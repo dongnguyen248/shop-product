@@ -19,5 +19,6 @@ Route::get('/', function () {
 // Route::view('/{any}', 'product')
 //     ->where('any', '.*');
 Auth::routes();
+Route::get('/admin', 'App\Http\Controllers\CustomizeController@index');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

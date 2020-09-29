@@ -8,12 +8,13 @@ require("./bootstrap");
 
 window.Vue = require("vue");
 import { store } from "./store/store";
+import { routes } from "./router/router";
 window.Form = Form;
 window.Swal = Swal;
 window.Toast = Toast;
 import VueRouter from "vue-router";
 import Vue from "vue";
-import routes from "./routes";
+// import routes from "./routes";
 import VueProgressBar from "vue-progressbar";
 import { Form, HasError, AlertError } from "vform";
 import Paginate from "vuejs-paginate";
@@ -73,6 +74,13 @@ Vue.component(
     require("./components/ExampleComponent.vue").default
 );
 Vue.component("home-page", require("./components/Customer/App.vue").default);
+Vue.component("admin-home", require("./components/Admin/Home.vue").default);
+Vue.component(HasError.name, HasError);
+Vue.component(AlertError.name, AlertError);
+Vue.component("paginate", Paginate);
+Vue.component("passport-clients", PassportClients);
+Vue.component("passport-authorized-clients", AuthorizedClients);
+Vue.component("passport-personal-access-tokens", PersonalAccessTokens);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -83,5 +91,6 @@ Vue.component("home-page", require("./components/Customer/App.vue").default);
 const app = new Vue({
     el: "#app",
     // render: h => h(App),
-    store
+    store,
+    router
 });
