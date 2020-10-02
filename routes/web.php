@@ -16,9 +16,14 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('Customer.trangchu');
 });
+// Route::get('/{any}', function () {
+//     return view('Admin.home');
+// })->where('any', '.*');
 // Route::view('/{any}', 'product')
 //     ->where('any', '.*');
 Auth::routes();
+
 Route::get('/admin', 'App\Http\Controllers\CustomizeController@index');
+Route::get('/admin-{path}', 'App\Http\Controllers\CustomizeController@index')->where('path', ('[A-Za-z0-9\-]+'));
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

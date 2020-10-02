@@ -6,24 +6,6 @@
           <div class="card-header">
             <h3 class="card-title">Product Table</h3>
 
-            <div style="width: 200px; display: inline; margin-left: 650px">
-              <select
-                v-model="filterProduct"
-                name="filterProduct"
-                class="form-control"
-                style="width: 200px; display: inline"
-              >
-                <option value="all">All Product Type</option>
-                <option
-                  v-for="type in productTypes"
-                  :key="type.id"
-                  :value="type.name"
-                >
-                  {{ type.name }}
-                </option>
-              </select>
-            </div>
-
             <div class="card-tools">
               <button class="btn btn-success" @click="newModal()">
                 Add new
@@ -48,14 +30,13 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="product in products" :key="product.id">
+                <tr v-for="product in getAllproducts" :key="product.id">
                   <td>{{ product.id }}</td>
                   <td>{{ product.name | upFirst }}</td>
                   <td>{{ product.description }}</td>
-                  <td>{{ product.uom }}</td>
-                  <td>{{ product.product_type }}</td>
+                  <td>{{ product.price }}</td>
+                  <td>{{ product.category }}</td>
                   <td>{{ product.price | myNumber }}</td>
-                  <td>{{ product.promotion_price | myNumber }}</td>
                   <td>
                     <img
                       v-if="product.photo != '' && product.photo != null"
@@ -66,10 +47,7 @@
                   </td>
                   <td>
                     <a href="#">
-                      <i
-                        class="fa fa-edit text-blue"
-                        @click="editModal(product)"
-                      ></i>
+                      <i class="fa fa-edit text-blue" @click.prevent="edit"></i>
                     </a>
                     /
                     <a href="#">
@@ -101,143 +79,35 @@
         <!-- /.card -->
       </div>
     </div>
-
-    <div
-      class="modal fade"
-      id="productModal"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="productModal"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">
-              {{ isEdit ? "Edit Product" : "Add new" }}
-            </h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <form @submit.prevent="isEdit ? updateProduct() : createProduct()">
-            <div class="modal-body">
-              <div class="form-group">
-                <input
-                  v-model="form.name"
-                  type="text"
-                  name="name"
-                  class="form-control"
-                  :class="{
-                    'is-invalid': form.errors.has('name'),
-                  }"
-                  placeholder="Name"
-                  required
-                />
-                <has-error :form="form" field="name"></has-error>
-              </div>
-              <div class="form-group">
-                <input
-                  v-model="form.description"
-                  type="description"
-                  name="description"
-                  class="form-control"
-                  placeholder="description"
-                />
-              </div>
-              <div class="form-group">
-                <select v-model="form.uom" name="type" class="form-control">
-                  <option value="none" selected>Select Product Uom</option>
-                  <option
-                    v-for="uom in productUoms"
-                    :key="uom.id"
-                    :value="uom.name"
-                  >
-                    {{ uom.name }}
-                  </option>
-                </select>
-              </div>
-              <div class="form-group">
-                <select
-                  v-model="form.product_type"
-                  name="type"
-                  class="form-control"
-                >
-                  <option value="none" selected>Select Product Type</option>
-                  <option
-                    v-for="type in productTypes"
-                    :key="type.id"
-                    :value="type.name"
-                  >
-                    {{ type.name }}
-                  </option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <input
-                  v-model="form.price"
-                  type="price"
-                  name="price"
-                  class="form-control"
-                  placeholder="Price"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <input
-                  v-model="form.promotion_price"
-                  type="pricePromotion"
-                  name="pricePromotion"
-                  class="form-control"
-                  placeholder="Price Promotion"
-                />
-              </div>
-              <div class="form-group row">
-                <label for="photo" class="col-sm-2 col-form-label">Photo</label>
-                <div class="input-group col-sm-10">
-                  <div class="custom-file">
-                    <input
-                      type="file"
-                      class="custom-file-input"
-                      id="photo"
-                      @change="chooseFile"
-                      accept="image/*"
-                    />
-                    <label class="custom-file-label" for="photo">{{
-                      form.photo
-                    }}</label>
-                  </div>
-                </div>
-              </div>
-
-              <p class="note" v-if="sizeFile / 1048576 >= 2">
-                Vui lòng chọn hình nhỏ hơn 2MB
-              </p>
-            </div>
-            <div class="modal-footer" v-if="sizeFile / 1048576 < 2">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-dismiss="modal"
-              >
-                Cancel
-              </button>
-              <button type="submit" class="btn btn-primary">
-                {{ isEdit ? "Update" : "Create" }}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 <script>
-export default {};
+import { mapGetters, mapActions } from "vuex";
+
+export default {
+  name: "List",
+  ...mapGetters({
+    notifications: "all",
+  }),
+  methods: {
+    newModal() {
+      this.isEdit = false;
+      this.form.reset();
+      this.form.clear();
+      $("#productModal").modal("show");
+    },
+    edit: function () {
+      this.$store.dispatch("editProduct", this.product);
+      this.$router.push({ name: "products.index" });
+    },
+  },
+  mounted() {
+    this.$store.dispatch("allProductfromDB");
+  },
+  computed: {
+    getAllproducts() {
+      return this.$store.getters.getproducts;
+    },
+  },
+};
 </script>

@@ -18,7 +18,8 @@ Route::post('register', 'App\Http\Controllers\AuthController@register');
 Route::post('login', 'App\Http\Controllers\AuthController@login');
 
 Route::apiResources([
-    'category' => 'App\Http\Controllers\API\CategoryController'
+    'category' => 'App\Http\Controllers\API\CategoryController',
+    'products' => 'App\Http\Controllers\API\ProductController'
 ]);
 
 

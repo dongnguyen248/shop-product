@@ -18,7 +18,7 @@ const categoryStore = {
             axios
                 .get(RESOURCE_CATEGORY)
                 .then(({ data }) => {
-                    console.log(data.categories);
+                    console.log(data.category);
                     context.commit("categories", data.categories);
                 })
                 .catch(error => {

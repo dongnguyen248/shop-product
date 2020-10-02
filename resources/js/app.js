@@ -54,7 +54,7 @@ const Toast = Swal.mixin({
 
 const router = new VueRouter({
     routes,
-    mode: "history"
+    mode: 'history'
 });
 // import App from "./components/Customer/App.vue";
 
